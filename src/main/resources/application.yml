@@ -1,3 +1,15 @@
+constants:
+  jwt:
+    issuer: green@green.com
+    schema: Bearer
+
+    claim-key: signedUser
+
+    header-key: Authorization
+    secret-key: EvenTheDarkestNightWillEndAndTheSunWillRiseAgain2025!
+
+    access-token-cookie-name: access-token
+
 eureka:
   client:
     fetch-registry: true
@@ -17,5 +29,18 @@ spring:
   application:
     name: hanip-cloud-gateway
 
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: action
+              uri: lb://HANIP-ACTION
+              predicates:
+                - Path=/api/favorite/**, /pic/profile/**
+            - id: actor
+              uri: lb://HANIP-ACTOR
+              predicates:
+                - Path=/api/user/**
   jackson:
     default-property-inclusion: non_null
