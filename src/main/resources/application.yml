@@ -37,10 +37,10 @@ spring:
             - id: action
               uri: lb://HANIP-ACTION
               predicates:
-                - Path=/api/favorite/**, /pic/profile/**
+                - Path=/api/**
             - id: actor
               uri: lb://HANIP-ACTOR
               predicates:
-                - Path=/api/user/**
+                - Path=/api/**
   jackson:
     default-property-inclusion: non_null
