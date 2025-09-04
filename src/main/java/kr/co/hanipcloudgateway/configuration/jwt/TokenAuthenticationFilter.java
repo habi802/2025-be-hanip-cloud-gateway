@@ -3,6 +3,7 @@ package kr.co.hanipcloudgateway.configuration.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.hanipcloudgateway.configuration.constants.ConstJwt;
+import kr.co.hanipcloudgateway.configuration.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -32,9 +33,14 @@ public class TokenAuthenticationFilter implements WebFilter {
 
         if(authentication != null) {
             try {
-                String signedUserJson = objectMapper.writeValueAsString(authentication.getPrincipal());
+                //String signedUserJson = objectMapper.writeValueAsString(authentication.getPrincipal());
+
+                // UserPrincipal MSA 바꿔주기
+                UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+                //데이터 스트링으로 받기
                 ServerHttpRequest modifiedRequest = request.mutate()
-                        .header(constJwt.getClaimKey(), signedUserJson)
+                        .header(constJwt.getClaimKey(), String.valueOf(userPrincipal.getSignedUserId()))
                         .build();
 
                 ServerWebExchange modifiedExchange = exchange.mutate()
