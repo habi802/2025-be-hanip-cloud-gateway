@@ -12,19 +12,18 @@ import java.util.stream.Collectors;
 
 @Getter
 public class UserPrincipal implements UserDetails {
-    private  long signedUserId;
-    private String role;
+    private final long signedUserId;
+    private final Collection<? extends GrantedAuthority> role;
 
-    public UserPrincipal() {}
 
     public UserPrincipal(long signedUserId, String role) {
         this.signedUserId = signedUserId;
-        this.role = role;
+        this.role = List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        return role;
     }
     @Override
     public String getPassword() {
@@ -33,6 +32,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return String.valueOf(signedUserId);
     }
 }
