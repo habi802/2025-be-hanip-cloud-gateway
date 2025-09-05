@@ -37,7 +37,7 @@ spring:
             - id: action
               uri: lb://HANIP-ACTION
               predicates:
-                - Path=/api/favorite/**, /api/contact/**
+                - Path=/api/favorite/**, /api/contact/**, /api/review/**, /api/order/**
             - id: actor
               uri: lb://HANIP-ACTOR
               predicates:
