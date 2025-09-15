@@ -62,6 +62,6 @@ public class JwtTokenProvider {
 
         JwtUser jwtUser = getJwtUserFromToken(token);
         UserPrincipal userPrincipal = new UserPrincipal(jwtUser.getSignedUserId(), jwtUser.getRole());
-        return new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userPrincipal, token, userPrincipal.getAuthorities());
     }
 }
