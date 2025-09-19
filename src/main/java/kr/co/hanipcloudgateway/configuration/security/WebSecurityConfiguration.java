@@ -7,6 +7,7 @@ import kr.co.hanipcloudgateway.configuration.jwt.TokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -27,18 +28,26 @@ import java.util.List;
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
-
+    private final Environment environment;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        String[] activeProfiles = environment.getActiveProfiles();
+
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(
-                Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"));
+
+        if (Arrays.asList(activeProfiles).contains("prod")) {
+            configuration.addAllowedOrigin("https://greenart.n-e.kr");
+        } else {
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        }
+
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -46,23 +55,19 @@ public class WebSecurityConfiguration {
 
     @Bean //스프링이 메소드 호출을 하고 리턴한 객체의 주소값을 관리한다. (빈등록)
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
-        return http
-
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .securityContextRepository(new StatelessWebSessionSecurityContextRepository()) // 세션 사용 안 함
-                .authorizeExchange(exchanges -> exchanges.pathMatchers("/api/feed", "/api/feed/**").authenticated()
-                        .pathMatchers(HttpMethod.GET,"/api/user").authenticated()
-                        .pathMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated()
-                        .anyExchange().permitAll()
-                )
-                .cors(corsSpec -> corsConfigurationSource())
-                .addFilterAt(tokenAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-                .build();
-
-
+        return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                   .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                   .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                   .securityContextRepository(new StatelessWebSessionSecurityContextRepository()) // 세션 사용 안 함
+                   .authorizeExchange(exchanges -> exchanges.pathMatchers("/api/feed", "/api/feed/**").authenticated()
+                                                            .pathMatchers(HttpMethod.GET,"/api/user").authenticated()
+                                                            .pathMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated()
+                                                            .anyExchange().permitAll()
+                   )
+                   .cors(corsSpec -> corsSpec.configurationSource(corsConfigurationSource()))
+                   .addFilterAt(tokenAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                   .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+                   .build();
     }
 
     //https://gose-kose.tistory.com/27
@@ -80,5 +85,4 @@ public class WebSecurityConfiguration {
             return EMPTY_CONTEXT;
         }
     }
-
 }
