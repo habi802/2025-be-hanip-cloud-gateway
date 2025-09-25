@@ -42,7 +42,8 @@ public class WebSecurityConfiguration {
         if (Arrays.asList(activeProfiles).contains("prod")) {
             configuration.addAllowedOrigin("https://greenart.n-e.kr");
         } else {
-            configuration.setAllowedOriginPatterns(List.of("*"));
+            configuration.addAllowedOrigin("http://localhost:5173");
+            // configuration.setAllowedOriginPatterns(List.of("*"));
         }
 
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

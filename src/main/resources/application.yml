@@ -34,6 +34,12 @@ spring:
       server:
         webflux:
           routes:
+            - id: sse
+              uri: lb://HANIP-ACTION
+              predicates:
+                - Path=/api/sse/**
+              filters:
+                - PreserveHostHeader
             - id: action
               uri: lb://HANIP-ACTION
               predicates:
@@ -42,5 +48,6 @@ spring:
               uri: lb://HANIP-ACTOR
               predicates:
                 - Path=/api/user/** ,/api/store/**,  /api/menu/**, /api/hanip-manager/actor/**, /images/**
+
   jackson:
     default-property-inclusion: non_null
