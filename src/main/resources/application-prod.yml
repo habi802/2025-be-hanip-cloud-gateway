@@ -30,6 +30,12 @@ spring:
     name: hanip-cloud-gateway
 
   cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+      reload:
+        enabled: true
+        strategy: refresh
     gateway:
       server:
         webflux:
