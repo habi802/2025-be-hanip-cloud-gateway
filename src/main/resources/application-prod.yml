@@ -12,10 +12,7 @@ constants:
 
 eureka:
   client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8888/eureka
+    enabled: false
 
 server:
   port: 8080
@@ -40,6 +37,12 @@ spring:
       server:
         webflux:
           routes:
+            - id: sse
+              uri: lb://hanip-action
+              predicates:
+                - Path=/api/sse/**
+              filters:
+                - PreserveHostHeader
             - id: hanip-action
               uri: lb://hanip-action
               predicates:
