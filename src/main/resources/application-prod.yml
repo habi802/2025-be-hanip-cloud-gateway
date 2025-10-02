@@ -1,3 +1,11 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 constants:
   jwt:
     issuer: green@green.com
@@ -13,14 +21,6 @@ constants:
 eureka:
   client:
     enabled: false
-
-server:
-  port: 8080
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
 
 spring:
   application:
@@ -46,10 +46,10 @@ spring:
             - id: hanip-action
               uri: lb://hanip-action
               predicates:
-                - Path=/api/favorite/**, /api/contact/**, /api/review/**, /api/order/**, /api/cart/**, /api/hanip-manager/action/**
+                - Path=/api/favorite/**, /api/contact/**, /api/review/**, /api/order/**, /api/cart/**, /api/hanip-manager/action/**, /api/kakao/**, /api/naver/**
             - id: hanip-actor
               uri: lb://hanip-actor
               predicates:
-                - Path=/api/user/** ,/api/store/**,  /api/menu/**, /api/hanip-manager/actor/**
+                - Path=/api/user/** ,/api/store/**, /api/menu/**, /api/hanip-manager/actor/**, /images/**
   jackson:
     default-property-inclusion: non_null

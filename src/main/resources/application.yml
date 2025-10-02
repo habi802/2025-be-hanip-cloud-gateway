@@ -1,3 +1,11 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 constants:
   jwt:
     issuer: green@green.com
@@ -16,14 +24,6 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: http://localhost:8888/eureka
-
-server:
-  port: 8080
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
 
 spring:
   application:
@@ -47,7 +47,6 @@ spring:
             - id: actor
               uri: lb://HANIP-ACTOR
               predicates:
-                - Path=/api/user/** ,/api/store/**,  /api/menu/**, /api/hanip-manager/actor/**, /images/**
-
+                - Path=/api/user/** ,/api/store/**, /api/menu/**, /api/hanip-manager/actor/**, /images/**
   jackson:
     default-property-inclusion: non_null
